@@ -129,16 +129,15 @@ def main():
                     break
         
         with placeholder2.container():
-            COLZ=[.20,.15,.50,.15]
+            COLZ=[.20,.20,.40,.20]
             d2=LocalTimeNow(localTimeZone)
-            st.markdown(f"Table of rising and setting times of the Sun, Moon, the planets, and the dwarf planet Pluto. Position indicates relative transit as of {d2.strftime('%H:%M')}. Positions update on the quarter hour. Times are for your location if you give permission for the app to read your position, or for Chicago otherwise.")
             COL1, COL2, COL3, COL4 = st.columns(COLZ)
             with COL1:
                 st.markdown("**Celestial Object**")
             with COL2:
                 st.markdown("**Rising Time**")
             with COL3:
-                st.markdown("**Rising    ...   Progress  ...   Setting**")
+                st.markdown("**Rising**   ... ... ... ...  transit  ... ... ... ...  **Setting**")
             with COL4:
                 st.markdown("**Setting Time**")
        
@@ -154,6 +153,8 @@ def main():
                     st.markdown(f"{ShortDaysOfTheWeek[cob[1][1].weekday()]} {cob[1][1].strftime('%H:%M')}")  
             st.divider()
             with st.expander("For more information about Celestial Companion click here ..."):
+                st.markdown(f"This is a table of the rising and setting times and the relative position in transit of the Sun, Moon, the planets, and the dwarf planet Pluto. The progress indicator for each celestial body indicates its relative transit from rising to setting as of {d2.strftime('%H:%M')}. Positions update on the quarter hour. Times are for your location if you give permission for the app to read your position, or for Chicago otherwise.")
+                st.markdown(f"All times reported for the {localTimeZone} timezone ([IANA](https://www.iana.org/time-zones) classification) and are based on the browser-obtained position of {localLat} degrees latitude and {localLong} degress logitude, or if permission was not granted, location in Chicago is assumed.")
                 st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial times are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
                 st.image("https://upload.wikimedia.org/wikipedia/commons/1/19/Solar_System_true_color.jpg",caption="Source: Wikipedia")
     
