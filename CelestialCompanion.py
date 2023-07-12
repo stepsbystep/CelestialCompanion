@@ -90,8 +90,6 @@ def Celestial(lTimeZone, lat=0, long=0):
                                      } )
     return(Celestial)
 
-planetsURL="https://solarsystem.nasa.gov/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSXBZekk0TVROaU56RXRPRFE0TkMwME1UWXpMV0V3WmpJdFltVXdNVE5qTW1Oak16UXdCam9HUlZRNkVHUnBjM0J2YzJsMGFXOXVTU0pQYVc1c2FXNWxPeUJtYVd4bGJtRnRaVDBpYzI5c1lYSnplWE5mYzJOaGJHVXVhbkJuSWpzZ1ptbHNaVzVoYldVcVBWVlVSaTA0SnlkemIyeGhjbk41YzE5elkyRnNaUzVxY0djR093WlVPaEZqYjI1MFpXNTBYM1I1Y0dWSklnOXBiV0ZuWlM5cWNHVm5CanNHVkRvUmMyVnlkbWxqWlY5dVlXMWxPZ3BzYjJOaGJBPT0iLCJleHAiOm51bGwsInB1ciI6ImJsb2Jfa2V5In19--490a023bc513ff3e3857b435fe41d82a6b263d96/solarsys_scale.jpg"
-
 def main():    
     import streamlit as st
     import time
@@ -156,7 +154,7 @@ def main():
                     st.markdown(f"{ShortDaysOfTheWeek[cob[1][1].weekday()]} {cob[1][1].strftime('%H:%M')}")  
             st.divider()
             with st.expander("For more information about Celestial Companion click here ..."):
-                st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial times are calcuated in Python with [Pyemphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge.")
+                st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial times are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
                 st.image("https://upload.wikimedia.org/wikipedia/commons/1/19/Solar_System_true_color.jpg",caption="Source: Wikipedia")
     
 if __name__ == '__main__':
