@@ -94,6 +94,8 @@ def main():
     import streamlit as st
     import time
 
+    st.set_page_config(layout="wide")
+    
     localTimeZone = st_javascript("""await (async () => {
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             console.log(userTimezone)
