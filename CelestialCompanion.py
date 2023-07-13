@@ -93,7 +93,7 @@ def Celestial(lTimeZone, lat=0, long=0):
 def main():    
     import streamlit as st
     import time
-    st.set_page_config(layout="centered")
+    #st.set_page_config(layout="centered")
 
     #localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
     
@@ -134,12 +134,12 @@ def main():
                 if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45]:
                     break
 
-        COLZ=[.30,.30,.10,.30]
+        COLZ=[.20,.20,.40,.20]
         
         with placeholder2.container():
             d2=LocalTimeNow(localTimeZone)
             COL1, COL2, COL3, COL4 = st.columns(COLZ)
-            if 1 == 2:
+            if 1 == 1:
                 with COL1:
                     st.markdown("**Celestial Object**")
                 with COL2:
