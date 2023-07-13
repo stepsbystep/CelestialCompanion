@@ -131,12 +131,16 @@ def main():
                     break
                 if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45]:
                     break
+
+        if localScreenWidth > 800:
+            COLZ=[.25,.25,.25,.25]
+        else:
+            COLZ=[.20,.20,.40,.20]
         
         with placeholder2.container():
             d2=LocalTimeNow(localTimeZone)
             COL1, COL2, COL3, COL4 = st.columns(COLZ)
             if localScreenWidth > 800:
-                COLZ=[.25,.25,.25,.25]
                 with COL1:
                     st.markdown("**Celestial Object**")
                 with COL2:
@@ -146,7 +150,6 @@ def main():
                 with COL4:
                     st.markdown("**Setting Time**")
             else:
-                COLZ=[.20,.20,.40,.20]
                 with COL1:
                     st.markdown("**Object**")
                 with COL2:
