@@ -107,7 +107,9 @@ def main():
     localLat=location['coords']['latitude']
     localLong=location['coords']['longitude']
     localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
-    st.write(f"Screen width is {localScreenWidth}")
+    #st.write(f"Screen width is {localScreenWidth}")
+    # android screen width is 412
+    # Legion screen width is 1536
     
     #st.markdown(localTimeZone)
     #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
@@ -131,17 +133,28 @@ def main():
                     break
         
         with placeholder2.container():
-            COLZ=[.20,.20,.40,.20]
             d2=LocalTimeNow(localTimeZone)
             COL1, COL2, COL3, COL4 = st.columns(COLZ)
-            with COL1:
-                st.markdown("**Celestial Object**")
-            with COL2:
-                st.markdown("**Rising Time**")
-            with COL3:
-                st.markdown("**Rising**   ... ... ... ...  transit  ... ... ... ...  **Setting**")
-            with COL4:
-                st.markdown("**Setting Time**")
+            if localScreenWidth > 800:
+                COLZ=[.25,.25,.25,.25]
+                with COL1:
+                    st.markdown("**Celestial Object**")
+                with COL2:
+                    st.markdown("**Rising Time**")
+                with COL3:
+                    st.markdown("**Rising**   ... ... ... ...  transit  ... ... ... ...  **Setting**")
+                with COL4:
+                    st.markdown("**Setting Time**")
+            else:
+                COLZ=[.20,.20,.40,.20]
+                with COL1:
+                    st.markdown("**Object**")
+                with COL2:
+                    st.markdown("**Rise**")
+                with COL3:
+                    st.markdown(" ... ...  **transit**  ... ... ")
+                with COL4:
+                    st.markdown("**Set**")
        
             for cob in Celestial(localTimeZone, localLat, localLong).iterrows():
                 COL1, COL2, COL3, COL4 = st.columns(COLZ)
