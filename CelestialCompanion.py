@@ -8,6 +8,8 @@ import ephem
 import datetime as dt
 from datetime import datetime as dtdt
 from streamlit_js_eval import streamlit_js_eval, get_geolocation
+import re
+
 
 DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
@@ -51,7 +53,7 @@ def Celestial(lTimeZone, lat=0, long=0):
         
     # compute next and previous risings and settings relative to 5 am local time
     LTN=LocalTimeNow(lTimeZone)
-    LOC.date=datetime(LTN.year,LTN.month,LTN.day,5)
+    localMorning=datetime(LTN.year,LTN.month,LTN.day,5)
         
     sun = ephem.Sun()
     moon = ephem.Moon()
@@ -65,8 +67,11 @@ def Celestial(lTimeZone, lat=0, long=0):
     CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn,neptune,pluto]
     CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Neptune','Pluto']
 
-    Celestial=pd.DataFrame(columns=['Rising Time', 'Setting Time', 'Position'], index=CelNames)
+    Celestial=pd.DataFrame(columns=['Rising Time', 'Setting Time', 'Position', 'Azimuth', 'Elevation'], index=CelNames)
     for cob in CelObjs:
+        
+        # get rising and setting times
+        LOC.date = localMorning
         cob.compute(LOC)
         rTime=LOC.next_rising(cob)
         sTime=LOC.next_setting(cob)
@@ -83,10 +88,20 @@ def Celestial(lTimeZone, lat=0, long=0):
             pos=0
         elif pos>= 1:
             pos=.995           
+        
+        # get azmith and elevation
+        LOC.date = LTN
+        cob.compute(LOC)
+        altdeg=cob.alt
+        altitude=re.findall(r"(\d+):", to_string(altdeg))[0]+u"\u00b0"
+        azideg=cob.az        
+        azimuth=re.findall(r"(\d+):", to_string(azideg))[0]+u"\u00b0"
         Celestial.loc[cob.name]=pd.Series({
                                    'Rising Time': risingTime
                                   ,'Setting Time': settingTime
                                   ,'Position' : pos
+                                  , 'Azimuth' : azimuth
+                                  , 'Altitude' : altitude
                                      } )
     return(Celestial)
 
@@ -107,8 +122,8 @@ def main():
     # https://github.com/aghasemi/streamlit_js_eval/tree/master
     # aghasemi Alireza Ghasemi
     location=get_geolocation()
-    localLat=location['coords']['latitude']
-    localLong=location['coords']['longitude']
+    localLat=to_string(location['coords']['latitude'])
+    localLong=to_string(location['coords']['longitude'])
     #st.write(f"Screen width is {localScreenWidth}")
     # android screen width is 412
     # Legion screen width is 1536
@@ -134,32 +149,32 @@ def main():
                 if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45]:
                     break
 
-        COLZ=[.20,.20,.40,.20]
+        COLZ=[.20,.15,.35,.15,.15]
+        #COLZ=[.15,.15,.25,.15,.15,.15]
         
         with placeholder2.container():
             d2=LocalTimeNow(localTimeZone)
-            COL1, COL2, COL3, COL4 = st.columns(COLZ)
+            #COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
+            COL1, COL2, COL3, COL4, COL5 = st.columns(COLZ)
             if 1 == 1:
                 with COL1:
                     st.markdown("**Celestial Object**")
                 with COL2:
                     st.markdown("**Rising Time**")
                 with COL3:
-                    st.markdown("**Rising**   ... ... ... ...  transit  ... ... ... ...  **Setting**")
+                    st.markdown(f"<div style='text-align: center'> ........ <b>transit progress</b> ............ </div>",unsafe_allow_html=True)
                 with COL4:
                     st.markdown("**Setting Time**")
-            else:
-                with COL1:
-                    st.markdown("**Object**")
-                with COL2:
-                    st.markdown("**Rise**")
-                with COL3:
-                    st.markdown(" ... ...  **transit**  ... ... ")
-                with COL4:
-                    st.markdown("**Set**")
+                with COL5:
+                    deg=u"\u00b0"
+                    helpText="Azimuth is the clockwise position in degress from North. Azimuth is updated every 15 minutes. Directions correspond to azimuth as follows: East=90"+deg+", South=180"+deg+", West=270"+deg+", and North=360"+deg+" and 0"+deg+"."
+                    st.markdown("**Azimuth**", help=helpText)              
+                #with COL6:
+                #    st.markdown("**Elevation**")
        
             for cob in Celestial(localTimeZone, localLat, localLong).iterrows():
-                COL1, COL2, COL3, COL4 = st.columns(COLZ)
+                COL1, COL2, COL3, COL4, COL5 = st.columns(COLZ)
+                #COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
                 with COL1:
                     st.markdown(f"**{cob[0]}**")
                 with COL2:
@@ -168,6 +183,12 @@ def main():
                     st.progress(cob[1][2])
                 with COL4:
                     st.markdown(f"{ShortDaysOfTheWeek[cob[1][1].weekday()]} {cob[1][1].strftime('%H:%M')}")  
+                with COL5:
+#                    st.markdown(cob[1][3])
+                     zspace=".........."
+                     st.markdown(f"<div style='text-align: center'>{cob[1][3]}</div>",unsafe_allow_html=True)
+                #with COL6:
+                #    st.markdown(cob[1][4])
             st.divider()
             with st.expander("For more information about Celestial Daily Companion click here ..."):
                 st.markdown(f"This is a table of the rising and setting times and the relative position in transit of the Sun, Moon, the planets, and the dwarf planet Pluto. The progress indicator for each celestial body indicates its relative transit from rising to setting as of {d2.strftime('%H:%M')}. Positions update on the quarter hour. Times are for your location if you give permission for the app to read your position, or for Chicago otherwise.")
