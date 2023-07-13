@@ -93,8 +93,9 @@ def Celestial(lTimeZone, lat=0, long=0):
 def main():    
     import streamlit as st
     import time
+    st.set_page_config(layout="centered")
 
-    st.set_page_config(layout="wide")
+    #localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
     
     localTimeZone = st_javascript("""await (async () => {
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -108,7 +109,6 @@ def main():
     location=get_geolocation()
     localLat=location['coords']['latitude']
     localLong=location['coords']['longitude']
-    localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
     #st.write(f"Screen width is {localScreenWidth}")
     # android screen width is 412
     # Legion screen width is 1536
@@ -134,15 +134,12 @@ def main():
                 if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45]:
                     break
 
-        if localScreenWidth > 800:
-            COLZ=[.25,.25,.25,.25]
-        else:
-            COLZ=[.20,.20,.40,.20]
+        COLZ=[.30,.30,.10,.30]
         
         with placeholder2.container():
             d2=LocalTimeNow(localTimeZone)
             COL1, COL2, COL3, COL4 = st.columns(COLZ)
-            if localScreenWidth > 800:
+            if 1 == 2:
                 with COL1:
                     st.markdown("**Celestial Object**")
                 with COL2:
