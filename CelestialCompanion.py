@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import ephem
 import datetime as dt
 from datetime import datetime as dtdt
-from streamlit_js_eval import get_geolocation
+from streamlit_js_eval import streamlit_js_eval, get_geolocation
 
 DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
@@ -106,7 +106,9 @@ def main():
     location=get_geolocation()
     localLat=location['coords']['latitude']
     localLong=location['coords']['longitude']
-
+    localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
+    st.write(f"Screen width is {localScreenWidth}")
+    
     #st.markdown(localTimeZone)
     #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
     firstIt=True    
@@ -152,10 +154,11 @@ def main():
                 with COL4:
                     st.markdown(f"{ShortDaysOfTheWeek[cob[1][1].weekday()]} {cob[1][1].strftime('%H:%M')}")  
             st.divider()
-            with st.expander("For more information about Celestial Companion click here ..."):
+            with st.expander("For more information about Celestial Daily Companion click here ..."):
                 st.markdown(f"This is a table of the rising and setting times and the relative position in transit of the Sun, Moon, the planets, and the dwarf planet Pluto. The progress indicator for each celestial body indicates its relative transit from rising to setting as of {d2.strftime('%H:%M')}. Positions update on the quarter hour. Times are for your location if you give permission for the app to read your position, or for Chicago otherwise.")
                 st.markdown(f"All times reported for the {localTimeZone} timezone ([IANA](https://www.iana.org/time-zones) classification) and are based on the browser-obtained position of {localLat} degrees latitude and {localLong} degress logitude, or if permission was not granted, location in Chicago is assumed.")
-                st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial times are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
+                st.write("This app was developed to promote celestial awareness, and most particularly, of the rising and setting times of the Sun and the Moon, as well as the phases of the moon. A page for phases of the Moon is planned be added at a future date.")
+                st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial positions are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
                 st.image("https://upload.wikimedia.org/wikipedia/commons/1/19/Solar_System_true_color.jpg",caption="Source: Wikipedia")
     
 if __name__ == '__main__':
