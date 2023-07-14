@@ -12,7 +12,7 @@ import re
 from geopy.geocoders import Nominatim
 
 # to get city if coords are available
-geolocator = Nominatim(user_agent="celestialcompanion")
+geolocator = Nominatim(user_agent="honoringthercelestial")
 
 DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
@@ -205,10 +205,10 @@ def main():
                 placeholder1.empty()
                 with placeholder1.container():
                     d=LocalTimeNow(localTimeZone)
-                    #if localCity!=None:
-                    #    st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
-                    #else:
-                    if 1==1:
+                    if localCity!=None:
+                        st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+                    else:
+                    #if 1==1:
                         st.header(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
                     znow=datetime.now()
                     delay=1-(znow-datetime(znow.year,znow.month,znow.day,znow.hour,znow.minute, znow.second)).total_seconds()
