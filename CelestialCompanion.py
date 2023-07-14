@@ -200,15 +200,15 @@ def main():
         with TAB1:
             #st.markdown(localTimeZone)
             #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
-            localCity=getCity(localLat,localLong)
+            #localCity=getCity(localLat,localLong)
             while False==False:
                 placeholder1.empty()
                 with placeholder1.container():
                     d=LocalTimeNow(localTimeZone)
-                    if localCity:
-                        st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
-                    else:
-                    #if 1==1:
+                    #if localCity:
+                    #    st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+                    #else:
+                    if 1==1:
                         st.header(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
                     znow=datetime.now()
                     delay=1-(znow-datetime(znow.year,znow.month,znow.day,znow.hour,znow.minute, znow.second)).total_seconds()
