@@ -4,3 +4,4 @@ backports_zoneinfo
 pytz
 streamlit-javascript
 streamlit_js_eval
+matplotlib
