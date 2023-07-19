@@ -327,7 +327,7 @@ def main():
     def geoloc():
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            geolocator = Nominatim(user_agent="cosmicconsciousness")
+            geolocator = Nominatim(user_agent="build-3.87-s5r23fuiyt7")
         return(geolocator)
     geolocator=geoloc()
 
