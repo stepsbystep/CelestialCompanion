@@ -305,6 +305,8 @@ def CelestialPicture():
                         
         cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
+        #box2 = AnnotationBbox("South", (0, xfac*pi-.3), frameon=False, label=cob.name)        
+        ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
         plt.axis('off')
         return(fig)
         #plt.show()
@@ -474,6 +476,12 @@ def main():
             with placeholder3.container():
                 CP=CelestialPicture()
                 st.pyplot(CP)
+                with st.expander("For more information this chart of celestial objects click here ..."):
+                    st.markdown(f"This chart shows the celestial objects oriented as an observer facing South would see them. Objects rise to East, which is on the left side of the chart, and set in the West, which is the right side of the chart. The South is at the top of the chart and North is at the bottom.")
+                    st.markdown(f"An object's position is determined by its azimuth and altitude. Azimuths and altitudes for all charted celestial objects are shown on the main page of this app.") 
+                    st.markdown(f"An object's azimuth is the angle moving to the object clockwise from North at the bottom of the chart.") 
+                    st.markdown(f"An object's elevation is represented relative to the horizon, which is represented as the red ring surrounding the black central area of the chart. Objects above the horizon are shown in the region between the horizon ring and the outer red ring representing 90"+deg+" elevation. Objects that are below the horizon and cannot be seen are in the black area. Ninty degrees negative elevation is the dead center of the chart, in red.")
+                    st.markdown(f"The region between the two red rings corresponds to the visible sky. This region is shown in light blue during the day and dark blue at night. Around sunrise and sunset intermediate colors are shown.")
 
         with TAB4:
             placeholder4.empty()
