@@ -137,7 +137,7 @@ def plotMoonPhase(lTimeZone):
     d=dtdt.now()
     nextFullDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextFullMoon.datetime().strftime('%B')} {nextFullMoon.datetime().day}")
     nextNewDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextNewMoon.datetime().strftime('%B')} {nextNewMoon.datetime().day}")
-    ax.text(70, -33, nextNewDate)
+    ax.text(65, -33, nextNewDate)
     ax.text(-160, -33, nextFullDate)
     ax.plot(sin(phase)*x, cos(phase)*x, ls='solid', linewidth=7, color='orange', alpha=1)
     plt.axis('off')
@@ -338,7 +338,10 @@ def main():
         geostr=to_string(f"{lat}, {long}")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            #location = geolocator.reverse(geostr)
+            try:
+                location = geolocator.reverse(geostr)
+            except:
+                location=None
         try:
             x=location.raw['address']
         except:
