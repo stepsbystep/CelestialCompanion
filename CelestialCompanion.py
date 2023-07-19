@@ -338,7 +338,7 @@ def main():
         geostr=to_string(f"{lat}, {long}")
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            location = geolocator.reverse(geostr)
+            #location = geolocator.reverse(geostr)
         try:
             x=location.raw['address']
         except:
