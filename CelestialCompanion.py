@@ -122,7 +122,7 @@ def plotMoonPhase(lTimeZone):
     nextNewMoon=ephem.next_new_moon(Chicago.date)
     nextFullMoon=ephem.next_full_moon(Chicago.date)
     decPhase=(Chicago.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
-    phase=(decPhase+.25)*2*pi
+    phase=(-decPhase+.25)*2*pi
     plt.rcParams["figure.figsize"] = [7.00, 3.50]
     plt.rcParams["figure.autolayout"] = True
     
@@ -242,9 +242,11 @@ def CelestialPicture():
     xr=[-xfac*pi,xfac*pi]
     yr=[-xfac*pi,xfac*pi]
 
-    plt.close()
-    fig, ax = plt.subplots()
-    
+    #fig, ax = plt.subplots()
+    # hopefully addressing memory issues!
+    # https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
+    fig, ax = plt.subplots(num=1,clear=True)
+        
     if 1==1:
         nx, ny = 1000.,1000.
         xgrid, ygrid = np.mgrid[xr[0]:xr[1]:(xr[1]-xr[0])/nx,yr[0]:yr[1]:(yr[1]-yr[0])/ny]
