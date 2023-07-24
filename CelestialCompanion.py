@@ -245,7 +245,7 @@ def CelestialPicture():
     #fig, ax = plt.subplots()
     # hopefully addressing memory issues!
     # https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
-    fig, ax = plt.subplots(num=1,clear=True)
+    fig, ax = plt.subplots(num=999,clear=True)
         
     if 1==1:
         nx, ny = 1000.,1000.
@@ -476,6 +476,7 @@ def main():
         with TAB3:
             placeholder3.empty()
             with placeholder3.container():
+                matplotlib.pyplot.close(999)
                 CP=CelestialPicture()
                 st.pyplot(CP)
                 with st.expander("For more information this chart of celestial objects click here ..."):
