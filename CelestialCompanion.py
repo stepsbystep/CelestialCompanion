@@ -306,7 +306,8 @@ def CelestialPicture():
                 box = AnnotationBbox(oi, (xy[0], xy[1]), frameon=False, label=cob.name)        
                 ax.add_artist(box)
                         
-        cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
+        #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
+        cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         #box2 = AnnotationBbox("South", (0, xfac*pi-.3), frameon=False, label=cob.name)        
         ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
