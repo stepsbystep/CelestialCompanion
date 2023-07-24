@@ -1,6 +1,7 @@
 import pandas as pd
 import io
 import pytz
+import matplotlib
 from streamlit_javascript import st_javascript
 from backports.zoneinfo import ZoneInfo
 from datetime import datetime, timedelta
