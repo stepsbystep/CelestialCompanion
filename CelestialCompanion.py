@@ -246,6 +246,7 @@ def CelestialPicture():
     #fig, ax = plt.subplots()
     # hopefully addressing memory issues!
     # https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
+    plt.close(999)
     fig, ax = plt.subplots(num=999,clear=True)
         
     if 1==1:
