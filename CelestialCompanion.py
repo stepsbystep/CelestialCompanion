@@ -394,6 +394,9 @@ def main():
         placeholder5=st.empty()
 
 
+    # check city
+    localCity=getCity(localLat,localLong)
+
     firstIt=True
     lastMinute=-99
     while True==True:
@@ -419,7 +422,7 @@ def main():
                         lastMinute=LocalTimeNow(localTimeZone).minute
                         break
                         
-            # check city
+            # check city in case app is travelling
             localCity=getCity(localLat,localLong)
 
             placeholder1b.empty()
