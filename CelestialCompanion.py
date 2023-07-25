@@ -28,7 +28,7 @@ def dayOfTheWeekNum(lTimeZone):
     if dw==7:
         dw=0
     return(dw)
-
+ 
 def dayOfTheWeek(lTimeZone):
     return DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]
 
@@ -250,7 +250,7 @@ def CelestialPicture():
     fig, ax = plt.subplots(num=999,clear=True)
         
     if 1==1:
-        nx, ny = 1000.,1000.
+        nx, ny = 100.,100.
         xgrid, ygrid = np.mgrid[xr[0]:xr[1]:(xr[1]-xr[0])/nx,yr[0]:yr[1]:(yr[1]-yr[0])/ny]
         im = xgrid*0 + np.nan
         xs = np.array([np.nan])
@@ -271,6 +271,8 @@ def CelestialPicture():
         circle0 = sCircle((0, 0), .49*pi, color='black') #, label='Not visible in daytime because below the horizon')
         circle1 = sCircle((0, 0), 0.025*pi, color='r') #, label='origin')
         circle2 = rCircle((0, 0),.5*pi, edgecolor='r', label='This is the horizon')
+        # https://stackoverflow.com/questions/51020192/circle-plot-with-color-bar
+        circle2a = sCircle((0, 0),pi, color=cmap(brightness)) #, label='This is the total vertical, looking straight up')
         circle3 = rCircle((0, 0),pi, edgecolor='r') #, label='This is the total vertical, looking straight up')
         
         import warnings
@@ -285,6 +287,7 @@ def CelestialPicture():
             #im[(slope>=thresh2)&(slope<=trans2)&(xgrid>=0)]=.5  
                 
         plt.imshow(im.T, cmap=cmap, extent=xr+yr, vmin=0, vmax=1)
+        ax.add_patch(circle2a)
         ax.add_patch(circle0)
         ax.add_patch(circle1)
         ax.add_patch(circle2)
