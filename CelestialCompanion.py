@@ -283,25 +283,30 @@ def CelestialPicture():
             xy=getXY(cob.az, cob.alt)
             #ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
             # arrowprops=None, 
-            ax.annotate(cob.name, xy=(xy[0], xy[1]), xytext=((xy[0]-0.3, xy[1]-0.1)), color='g') 
-            if cob.name not in ['Sun', 'Moon', 'Jupiter']:
-                ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
+            #ax.annotate(cob.name, xy=(xy[0], xy[1]), xytext=((xy[0]-0.3, xy[1]-0.1)), color='g') 
+            if cob.name not in ['Sun', 'Moon', 'Jupiter', 'Saturn']:
+                ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r')) #, label=cob.name))
             else:
                 if cob.name=='Sun':
                     imtest = plt.imread('sun1.png')
                     soi = OffsetImage(imtest, zoom = .15)
-                    sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)        
+                    sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
                     ax.add_artist(sbox)
                 if cob.name=='Moon':
                     imtest = plt.imread('Moon-FQ.png')
                     moi = OffsetImage(imtest, zoom = .10)
-                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False, label=cob.name)        
+                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
                     ax.add_artist(mbox)
                 if cob.name=='Jupiter':
                     imtest = plt.imread('Jupiter.png')
-                    moi = OffsetImage(imtest, zoom = .15)
-                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False, label=cob.name)        
-                    ax.add_artist(mbox)
+                    joi = OffsetImage(imtest, zoom = .15)
+                    jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(jbox)
+                if cob.name=='Saturn':
+                    imtest = plt.imread('Saturn.png')
+                    joi = OffsetImage(imtest, zoom = .08)
+                    jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(jbox)
                         
         #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
