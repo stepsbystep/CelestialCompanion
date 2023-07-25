@@ -64,10 +64,11 @@ def Celestial(lTimeZone, lat=0, long=0):
     mercury=ephem.Mercury()
     jupiter=ephem.Jupiter()
     saturn=ephem.Saturn()
+    uranus=ephem.Uranus()
     neptune=ephem.Neptune()
     pluto=ephem.Pluto()
-    CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn,neptune,pluto]
-    CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Neptune','Pluto']
+    CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn,uranus,neptune,pluto]
+    CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto']
 
     Celestial=pd.DataFrame(columns=['Rising Time', 'Setting Time', 'Position', 'Azimuth', 'Altitude'], index=CelNames)
     for cob in CelObjs:
@@ -199,10 +200,11 @@ def CelestialPicture():
     mercury=ephem.Mercury()
     jupiter=ephem.Jupiter()
     saturn=ephem.Saturn()
+    uranus=ephem.Uranus()
     neptune=ephem.Neptune()
     pluto=ephem.Pluto()
-    CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn,neptune,pluto]
-    CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Neptune','Pluto']
+    CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn, uranus, neptune,pluto]
+    CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn', 'Uranus', 'Neptune','Pluto']
 
     # sun rising and setting
     LOC.date=rTime
@@ -284,14 +286,19 @@ def CelestialPicture():
             #ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
             # arrowprops=None, 
             #ax.annotate(cob.name, xy=(xy[0], xy[1]), xytext=((xy[0]-0.3, xy[1]-0.1)), color='g') 
-            if cob.name not in ['Sun', 'Moon', 'Jupiter', 'Saturn']:
-                ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r')) #, label=cob.name))
-            else:
+            #if cob.name not in ['Sun', 'Moon', 'Mercury','Venus','Jupiter', 'Saturn', 'Mars', 'Uranus']:
+            #    ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r')) #, label=cob.name))
+            if 1==1:
                 if cob.name=='Sun':
                     imtest = plt.imread('sun1.png')
                     soi = OffsetImage(imtest, zoom = .15)
                     sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
                     ax.add_artist(sbox)
+                if cob.name=='Uranus':
+                    imtest = plt.imread('Uranus.png')
+                    roi = OffsetImage(imtest, zoom = .08)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
                 if cob.name=='Moon':
                     imtest = plt.imread('Moon-FQ.png')
                     moi = OffsetImage(imtest, zoom = .10)
@@ -302,11 +309,36 @@ def CelestialPicture():
                     joi = OffsetImage(imtest, zoom = .15)
                     jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
                     ax.add_artist(jbox)
+                if cob.name=='Neptune':
+                    imtest = plt.imread('Neptune.png')
+                    roi = OffsetImage(imtest, zoom = .08)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
                 if cob.name=='Saturn':
                     imtest = plt.imread('Saturn.png')
-                    joi = OffsetImage(imtest, zoom = .08)
+                    joi = OffsetImage(imtest, zoom = .10)
                     jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
                     ax.add_artist(jbox)
+                if cob.name=='Mars':
+                    imtest = plt.imread('Mars.png')
+                    roi = OffsetImage(imtest, zoom = .03)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
+                if cob.name=='Mercury':
+                    imtest = plt.imread('Mercury.png')
+                    roi = OffsetImage(imtest, zoom = .1)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
+                if cob.name=='Venus':
+                    imtest = plt.imread('Venus.png')
+                    roi = OffsetImage(imtest, zoom = .1)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
+                if cob.name=='Pluto':
+                    imtest = plt.imread('Pluto.png')
+                    roi = OffsetImage(imtest, zoom = .1)
+                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
+                    ax.add_artist(rbox)
                         
         #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
