@@ -250,11 +250,10 @@ def CelestialPicture():
     fig, ax = plt.subplots(num=999,clear=True)
         
     if 1==1:
-        nx, ny = 100.,100.
+        nx, ny = 50.,50.
         xgrid, ygrid = np.mgrid[xr[0]:xr[1]:(xr[1]-xr[0])/nx,yr[0]:yr[1]:(yr[1]-yr[0])/ny]
-        im = xgrid*0 + np.nan
-        xs = np.array([np.nan])
-        ys = np.array([np.nan])
+        #im = xgrid*0 + np.nan
+        im = xgrid*0 + 1
         cmap = plt.cm.Blues
         cmap.set_bad('white')
         
@@ -274,17 +273,7 @@ def CelestialPicture():
         # https://stackoverflow.com/questions/51020192/circle-plot-with-color-bar
         circle2a = sCircle((0, 0),pi, color=cmap(brightness)) #, label='This is the total vertical, looking straight up')
         circle3 = rCircle((0, 0),pi, edgecolor='r') #, label='This is the total vertical, looking straight up')
-        
-        import warnings
-        #for curcen,currad in zip(centers,radiuses):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            slope=ygrid/xgrid
-            im[(xgrid**2+ygrid**2)**(1/2)<=pi]=brightness
-            #im[(slope<thresh1)&(xgrid<0)]=.5
-            #im[(slope<=thresh1)&(slope>trans1)&(xgrid<0)]=.5  
-            #im[(slope>thresh2)&(xgrid>=0)]=.5
-            #im[(slope>=thresh2)&(slope<=trans2)&(xgrid>=0)]=.5  
+
                 
         plt.imshow(im.T, cmap=cmap, extent=xr+yr, vmin=0, vmax=1)
         ax.add_patch(circle2a)
@@ -405,13 +394,14 @@ def main():
         placeholder5=st.empty()
 
 
-    firstIt=True    
+    firstIt=True
+    lastMinute=-99
     while True==True:
         with TAB1:
             #st.markdown(localTimeZone)
             #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
-            localCity=getCity(localLat,localLong)
             while False==False:
+                
                 placeholder1.empty()
                 with placeholder1.container():
                     d=LocalTimeNow(localTimeZone)
@@ -425,9 +415,13 @@ def main():
                     if firstIt==True:
                         firstIt=False
                         break
-                    if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45]:
+                    if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45] and LocalTimeNow(localTimeZone).minute != lastMinute:
+                        lastMinute=LocalTimeNow(localTimeZone).minute
                         break
                         
+            # check city
+            localCity=getCity(localLat,localLong)
+
             placeholder1b.empty()
             with placeholder1b.container():
                 d2=LocalTimeNow(localTimeZone)
