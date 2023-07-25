@@ -252,21 +252,14 @@ def CelestialPicture():
     if 1==1:
         nx, ny = 50.,50.
         xgrid, ygrid = np.mgrid[xr[0]:xr[1]:(xr[1]-xr[0])/nx,yr[0]:yr[1]:(yr[1]-yr[0])/ny]
-        #im = xgrid*0 + np.nan
-        im = xgrid*0 + 1
+        im = xgrid*0 + np.nan
+        #im = xgrid*0 + 1
         cmap = plt.cm.Blues
         cmap.set_bad('white')
         
         az1=risingAz
         az2=settingAz
-        
-        transRads=pi/16
-
-        thresh1 = -1/tan(az1)
-        thresh2 = -1/tan(az2)
-        trans1=-1/tan(az1-transRads)
-        trans2=-1/tan(az2+transRads)
-        
+                
         circle0 = sCircle((0, 0), .49*pi, color='black') #, label='Not visible in daytime because below the horizon')
         circle1 = sCircle((0, 0), 0.025*pi, color='r') #, label='origin')
         circle2 = rCircle((0, 0),.5*pi, edgecolor='r', label='This is the horizon')
@@ -282,6 +275,7 @@ def CelestialPicture():
         ax.add_patch(circle2)
         ax.add_patch(circle3)
 
+        from matplotlib.offsetbox import OffsetImage, AnnotationBbox
         LOC.date=ephem.Date(datetime.utcnow())
         for cob in CelObjs:
             # curren positions
@@ -290,14 +284,24 @@ def CelestialPicture():
             #ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
             # arrowprops=None, 
             ax.annotate(cob.name, xy=(xy[0], xy[1]), xytext=((xy[0]-0.3, xy[1]-0.1)), color='g') 
-            if cob.name!='Sun':
+            if cob.name not in ['Sun', 'Moon', 'Jupiter']:
                 ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
             else:
-                imtest = plt.imread('sun1.png')
-                from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-                oi = OffsetImage(imtest, zoom = .15)
-                box = AnnotationBbox(oi, (xy[0], xy[1]), frameon=False, label=cob.name)        
-                ax.add_artist(box)
+                if cob.name=='Sun':
+                    imtest = plt.imread('sun1.png')
+                    soi = OffsetImage(imtest, zoom = .15)
+                    sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)        
+                    ax.add_artist(sbox)
+                if cob.name=='Moon':
+                    imtest = plt.imread('Moon-FQ.png')
+                    moi = OffsetImage(imtest, zoom = .10)
+                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False, label=cob.name)        
+                    ax.add_artist(mbox)
+                if cob.name=='Jupiter':
+                    imtest = plt.imread('Jupiter.png')
+                    moi = OffsetImage(imtest, zoom = .15)
+                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False, label=cob.name)        
+                    ax.add_artist(mbox)
                         
         #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
