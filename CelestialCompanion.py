@@ -185,7 +185,7 @@ def CelestialPicture():
     
     sun = ephem.Sun()
     moon = ephem.Moon()
-    LOC.date = localMorning
+    LOC.date = ephem.Date(datetime.utcnow()) 
     sun.compute(LOC)
     rTime=LOC.next_rising(sun)
     sTime=LOC.next_setting(sun)
@@ -219,7 +219,7 @@ def CelestialPicture():
     #print(sun.az, sun.alt)
             
     # relative brighness
-    relRise=(((ephem.Date(datetime.utcnow())-rTime))/(sTime-rTime)-0.5)
+    relRise=abs(((ephem.Date(datetime.utcnow())-rTime))/(sTime-rTime)-0.5)
     if  relRise < 0.3/2:
         darkness=0.0
     elif relRise < 0.4/2:
@@ -319,7 +319,7 @@ def CelestialPicture():
         cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
-        ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
+        3ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
         plt.axis('off')
         return(fig)
         #plt.show()
