@@ -48,8 +48,11 @@ def Celestial(lTimeZone, lat=0, long=0):
     
     if lat != 0:
         LOC = ephem.Observer()
-        LOC.lon = to_string(long)
-        LOC.lat = to_string(lat)
+        try:
+            LOC.lon = to_string(long)
+            LOC.lat = to_string(lat)
+        exception:
+            LOC = ephem.city("Chicago")
     else:
         LOC = ephem.city("Chicago")
         
@@ -503,7 +506,7 @@ def main():
         with TAB2:
             placeholder2.empty()
             with placeholder2.container():
-                st.header("Phases of the Moon and the Current Phase")
+                st.header("Current Phase of the Moon")
                 st.pyplot(plotMoonPhase(localTimeZone, localLat, localLong))
                 st.markdown("Dates are for the next new and full moons. The orange line and circle indicate the current moon phase. Illustration credit Wikipedia: Andonee - Own work [CC BY-SA 4.0](htps://commons.wikimedia.org/w/index.php?curid=38635547)")
         with TAB1:
