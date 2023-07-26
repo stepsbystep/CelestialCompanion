@@ -429,7 +429,7 @@ def main():
         else:
             st.subheader(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
     
-    TAB1, TAB2, TAB3, TAB4, TAB5 = st.tabs(["Celestial Globe", "Phases of the Moon", "Astronomical Table", "Why", "About"])
+    TAB1, TAB2, TAB3, TAB4, TAB5 = st.tabs(["Celestial Globe", "Moon Phases", "Table", "Why", "About"])
     
     with TAB1:
         placeholder1=st.empty()
