@@ -252,6 +252,9 @@ def CelestialPicture():
     legY=[.85*yr[0], .95*yr[0]]
     
     legendLocs={'Sun': (legX[0],legY[0]),'Moon': (legX[0],legY[1]),'Mercury': (legX[1],legY[0]),'Venus': (legX[1],legY[1]),'Mars': (legX[2],legY[0]),'Jupiter': (legX[2],legY[1]),'Saturn': (legX[3],legY[0]), 'Uranus': (legX[3],legY[1]), 'Neptune': (legX[4],legY[0]),'Pluto': (legX[4],legY[1])}
+
+    legendColorsDay={'Sun': 'black','Moon': 'black','Mercury': 'black','Venus': 'black','Mars': 'black','Jupiter': 'black','Saturn': 'black', 'Uranus': 'black', 'Neptune': 'black','Pluto': 'black'}
+    legendColorsNight={'Sun': 'black','Moon': 'black','Mercury': 'red','Venus': 'black','Mars': 'red','Jupiter': 'red','Saturn': 'red', 'Uranus': 'black', 'Neptune': 'black','Pluto': 'black'}
     
     # memory issues: https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
     plt.close(999)
@@ -312,14 +315,21 @@ def CelestialPicture():
                 soi = OffsetImage(imtest, zoom = 0.4*cobZoom[cob.name])
                 sbox = AnnotationBbox(soi, legendLocs[cob.name], frameon=False, label=cob.name)   
                 ax.add_artist(sbox)
-                ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-2.5)), textcoords='offset points', color='black', fontsize=6)
+                if darkness < .75:
+                    tColor=legendColorsDay[cob.name]
+                else:
+                    tColor=legendColorsNight[cob.name]
+                ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-1)), textcoords='offset points', color=tColor, fontsize=6)
       
         cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
-        ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
-        3ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
+        if darkness < .75:
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
+        else: 
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='red') 
+        #ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
         plt.axis('off')
         return(fig)
         #plt.show()
