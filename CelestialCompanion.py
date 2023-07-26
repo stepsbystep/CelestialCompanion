@@ -175,7 +175,6 @@ def CelestialPicture():
     import matplotlib.pyplot as plt,numpy as np
     from math import pi, tan
     import ephem
-    #def gauplot(centers, radiuses, xr=None, yr=None):
     import mplcursors
     #%matplotlib inline
     #%matplotlib widget
@@ -221,7 +220,6 @@ def CelestialPicture():
             
     # relative brighness
     relRise=(((ephem.Date(datetime.utcnow())-rTime))/(sTime-rTime)-0.5)
-    #print(relRise)
     if  relRise < 0.3/2:
         darkness=0.0
     elif relRise < 0.4/2:
@@ -243,8 +241,6 @@ def CelestialPicture():
     
     print(relRise,darkness)
     
-    centers=[(0, 0)]
-    radiuses=[3, 4]
     xfac=1.01
     xr=[-xfac*pi,xfac*pi]
     yr=[-xfac*pi,xfac*pi]
@@ -265,7 +261,6 @@ def CelestialPicture():
         nx, ny = 50.,50.
         xgrid, ygrid = np.mgrid[xr[0]:xr[1]:(xr[1]-xr[0])/nx,yr[0]:yr[1]:(yr[1]-yr[0])/ny]
         im = xgrid*0 + np.nan
-        #im = xgrid*0 + 1
         cmap = plt.cm.Blues
         cmap.set_bad('white')
 
@@ -279,7 +274,6 @@ def CelestialPicture():
         circle2 = rCircle((0, 0),.5*pi, edgecolor='r', label='This is the horizon')
         # https://stackoverflow.com/questions/51020192/circle-plot-with-color-bar
         circle2a = sCircle((0, 0),pi, color=cmap(norm(darkness))) #, label='This is the total vertical, looking straight up')
-        #circle2a = sCircle((0, 0),pi, color=cmap(darkness)) #, label='This is the total vertical, looking straight up')
         circle3 = rCircle((0, 0),pi, edgecolor='r') #, label='This is the total vertical, looking straight up')
 
         ax.add_patch(circle2a)
@@ -289,9 +283,11 @@ def CelestialPicture():
         ax.add_patch(circle3)
 
         # set celestial objects
+        doLegend=True
         from matplotlib.offsetbox import OffsetImage, AnnotationBbox
         LOC.date=ephem.Date(datetime.utcnow())
         cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.10}
+        moonPhasesSuf=['new','WC','FQ','WG','full','XG','3Q','XC']
         for cob in CelObjs:
             # curren positions
             cob.compute(LOC)
@@ -299,24 +295,31 @@ def CelestialPicture():
             if cob.name!='Moon':
                 fName=cob.name
             else:
-                fName='Moon-'+'FQ'
+                Chicago = ephem.city("Chicago")
+                lastNewMoon=ephem.previous_new_moon(Chicago.date)
+                nextNewMoon=ephem.next_new_moon(Chicago.date)
+                nextFullMoon=ephem.next_full_moon(Chicago.date)
+                decPhase=(Chicago.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
+                numPhase=int(decPhase*7.999)
+                fName='Moon-'+moonPhasesSuf[numPhase]
             imtest = plt.imread(fName+'.png')
             soi = OffsetImage(imtest, zoom = cobZoom[cob.name])
             # set celestial object on chart 
             sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)   
             ax.add_artist(sbox)
             # set legend
-            soi = OffsetImage(imtest, zoom = 0.4*cobZoom[cob.name])
-            sbox = AnnotationBbox(soi, legendLocs[cob.name], frameon=False)   
-            ax.add_artist(sbox)
-            ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-2.5)), textcoords='offset points', color='black', fontsize=6)
-            #ax.annotate(cob.name, legendLocs[cob.name], legendLocs[cob.name], xycoords='data', color='black')
+            if doLegend==True:
+                soi = OffsetImage(imtest, zoom = 0.4*cobZoom[cob.name])
+                sbox = AnnotationBbox(soi, legendLocs[cob.name], frameon=False, label=cob.name)   
+                ax.add_artist(sbox)
+                ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-2.5)), textcoords='offset points', color='black', fontsize=6)
       
-        #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
-        cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
+        cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
-        #box2 = AnnotationBbox("South", (0, xfac*pi-.3), frameon=False, label=cob.name)        
+        cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
+        cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
+        ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
         plt.axis('off')
         return(fig)
         #plt.show()
@@ -340,7 +343,7 @@ def main():
     def geoloc():
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            geolocator = Nominatim(user_agent="build-3.87-s5r23fuiyt7")
+            geolocator = Nominatim(user_agent="celestialgoingson")
         return(geolocator)
     geolocator=geoloc()
 
@@ -380,6 +383,8 @@ def main():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         with contextlib.suppress(TypeError):
+            localLat=None
+            localLong=None
             location=get_geolocation()
             localLat=to_string(location['coords']['latitude'])
             localLong=to_string(location['coords']['longitude'])
@@ -406,7 +411,6 @@ def main():
 
     with TAB5:
         placeholder5=st.empty()
-
 
     # check city
     localCity=getCity(localLat,localLong)
@@ -443,9 +447,7 @@ def main():
             with placeholder1b.container():
                 d2=LocalTimeNow(localTimeZone)
                 COLZ=[.20,.15,.20,.15,.15,.15]
-                #COLZ=[.15,.15,.25,.15,.15,.15]
                 COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
-                #COL1, COL2, COL3, COL4, COL5 = st.columns(COLZ)
                 if 1 == 1:
                     with COL1:
                         st.markdown("**Celestial Object**")
@@ -464,7 +466,6 @@ def main():
                         st.markdown("**Altitude**",help=helpTextAlt)
        
                 for cob in Celestial(localTimeZone, localLat, localLong).iterrows():
-                    #COL1, COL2, COL3, COL4, COL5 = st.columns(COLZ)
                     COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
                     with COL1:
                         st.markdown(f"**{cob[0]}**")
