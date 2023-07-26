@@ -359,18 +359,33 @@ def getImage(zurl, fType):
     return(zimage)
 
 
-def main():    
-    import streamlit as st
-    import time
-    
     # to get city if coords are available
-    @st.cache_resource
+    #@st.cache_resource
     def geoloc():
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             geolocator = Nominatim(user_agent="celestialgoingson")
         return(geolocator)
     geolocator=geoloc()
+
+    
+    #st.set_page_config(layout="centered")
+    #localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
+        
+    # https://discuss.streamlit.io/t/streamlit-geolocation/30796
+    # https://github.com/aghasemi/streamlit_js_eval/tree/master
+    # aghasemi Alireza Ghasemi
+
+
+def main():    
+    import streamlit as st
+    import time
+    
+    localTimeZone = st_javascript("""await (async () => {
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.log(userTimezone)
+            return userTimezone
+            })().then(returnValue => returnValue)""")
 
     @st.cache_resource
     def getCity(lat,long):
@@ -391,19 +406,7 @@ def main():
             return(location.raw['address']['city'])
         except KeyError:
             return(location.raw['address']['town'])
-    
-    #st.set_page_config(layout="centered")
-    #localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
-    
-    localTimeZone = st_javascript("""await (async () => {
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            console.log(userTimezone)
-            return userTimezone
-            })().then(returnValue => returnValue)""")
-    
-    # https://discuss.streamlit.io/t/streamlit-geolocation/30796
-    # https://github.com/aghasemi/streamlit_js_eval/tree/master
-    # aghasemi Alireza Ghasemi
+
     import contextlib
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -413,12 +416,19 @@ def main():
             location=get_geolocation()
             localLat=to_string(location['coords']['latitude'])
             localLong=to_string(location['coords']['longitude'])
-    #st.write(f"Screen width is {localScreenWidth}")
-    # android screen width is 412
-    # Legion screen width is 1536
-
+    
+    # check city
+    localCity=getCity(localLat,localLong)
 
     st.title("Celestial Daily Companion")
+    placeholderTime=st.empty()
+    with placeholderTime.container():
+        d=LocalTimeNow(localTimeZone)
+        if localCity!=None:
+            st.subheader(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+        else:
+            st.subheader(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+    
     TAB1, TAB2, TAB3, TAB4, TAB5 = st.tabs(["Celestial Globe", "Phases of the Moon", "Astronomical Table", "Why", "About"])
     
     with TAB1:
@@ -429,16 +439,12 @@ def main():
     
     with TAB3:
         placeholder3=st.empty()
-        placeholder3b=st.empty()
         
     with TAB4:
         placeholder4=st.empty()
 
     with TAB5:
         placeholder5=st.empty()
-
-    # check city
-    localCity=getCity(localLat,localLong)
 
     firstIt=True
     lastMinute=-99
@@ -448,13 +454,13 @@ def main():
             #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
             while False==False:
                 
-                placeholder3.empty()
-                with placeholder3.container():
+                placeholderTime.empty()
+                with placeholderTime.container():
                     d=LocalTimeNow(localTimeZone)
                     if localCity!=None:
-                        st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+                        st.subheader(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
                     else:
-                        st.header(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
+                        st.subheader(f"{DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
                     znow=datetime.now()
                     delay=1-(znow-datetime(znow.year,znow.month,znow.day,znow.hour,znow.minute, znow.second)).total_seconds()
                     time.sleep(delay)
@@ -468,8 +474,8 @@ def main():
             # check city in case app is travelling
             localCity=getCity(localLat,localLong)
 
-            placeholder3b.empty()
-            with placeholder3b.container():
+            placeholder3.empty()
+            with placeholder3.container():
                 d2=LocalTimeNow(localTimeZone)
                 COLZ=[.20,.15,.20,.15,.15,.15]
                 COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
