@@ -236,7 +236,7 @@ def CelestialPicture():
         darkness=0.7
     elif relRise < 1.0/2:
         darkness=0.8
-    elif relrise < 1.1/2:
+    elif relRise < 1.1/2:
         darkness=0.9
     else:
         darkness=1.0
