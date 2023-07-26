@@ -206,6 +206,7 @@ def CelestialPicture():
     CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn, uranus, neptune,pluto]
     CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn', 'Uranus', 'Neptune','Pluto']
 
+    
     # sun rising and setting
     LOC.date=rTime
     sun.compute(LOC)
@@ -219,35 +220,44 @@ def CelestialPicture():
     #print(sun.az, sun.alt)
             
     # relative brighness
-    relRise=abs((ephem.Date(datetime.utcnow())-rTime)/(sTime-rTime)-0.5)
-    if  relRise < 0.3:
-        brightness=0.05
-    elif relRise < 0.45:
-        brightness=0.25
-    elif relRise < 0.5:
-        brightness=0.5
-    elif relRise < 0.6:
-        brightness=0.75
-    elif relRise < 0.7:
-        brightness=0.85
+    relRise=(((ephem.Date(datetime.utcnow())-rTime))/(sTime-rTime)-0.5)
+    #print(relRise)
+    if  relRise < 0.3/2:
+        darkness=0.0
+    elif relRise < 0.4/2:
+        darkness=0.15
+    elif relRise < 0.6/2:
+        darkness=0.3
+    elif relRise < 0.7/2:
+        darkness=0.4
+    elif relRise < 0.8/2:
+        darkness=0.5
+    elif relRise < 0.9/2:
+        darkness=0.7
+    elif relRise < 1.0/2:
+        darkness=0.8
+    elif relrise < 1.1/2:
+        darkness=0.9
     else:
-        brightness = 1        
-        
-    # figure without importing matplot lib ... supposed to help with memory leaks
-    # https://matplotlib.org/stable/gallery/user_interfaces/web_application_server_sgskip.html#sphx-glr-gallery-user-interfaces-web-application-server-sgskip-py
-    #from matplotlib.figure import Figure
-    #fig = Figure()
-    #ax = fig.subplots()
-
+        darkness=1.0
+    
+    print(relRise,darkness)
+    
     centers=[(0, 0)]
     radiuses=[3, 4]
     xfac=1.01
     xr=[-xfac*pi,xfac*pi]
     yr=[-xfac*pi,xfac*pi]
 
-    #fig, ax = plt.subplots()
-    # hopefully addressing memory issues!
-    # https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
+    zLeg=[0.02, 0.22, 0.41, 0.61, 0.80]
+    legX=[]
+    for z in zLeg:
+        legX.append(z*xr[1]+(1-z)*xr[0])
+    legY=[.85*yr[0], .95*yr[0]]
+    
+    legendLocs={'Sun': (legX[0],legY[0]),'Moon': (legX[0],legY[1]),'Mercury': (legX[1],legY[0]),'Venus': (legX[1],legY[1]),'Mars': (legX[2],legY[0]),'Jupiter': (legX[2],legY[1]),'Saturn': (legX[3],legY[0]), 'Uranus': (legX[3],legY[1]), 'Neptune': (legX[4],legY[0]),'Pluto': (legX[4],legY[1])}
+    
+    # memory issues: https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
     plt.close(999)
     fig, ax = plt.subplots(num=999,clear=True)
         
@@ -258,88 +268,50 @@ def CelestialPicture():
         #im = xgrid*0 + 1
         cmap = plt.cm.Blues
         cmap.set_bad('white')
+
+        # set up chart
+        plt.imshow(im.T, cmap=cmap, extent=xr+yr, vmin=0, vmax=1)
         
-        az1=risingAz
-        az2=settingAz
-                
+        from matplotlib.colors import Normalize
+        norm = Normalize(0, 1)
         circle0 = sCircle((0, 0), .49*pi, color='black') #, label='Not visible in daytime because below the horizon')
         circle1 = sCircle((0, 0), 0.025*pi, color='r') #, label='origin')
         circle2 = rCircle((0, 0),.5*pi, edgecolor='r', label='This is the horizon')
         # https://stackoverflow.com/questions/51020192/circle-plot-with-color-bar
-        circle2a = sCircle((0, 0),pi, color=cmap(brightness)) #, label='This is the total vertical, looking straight up')
+        circle2a = sCircle((0, 0),pi, color=cmap(norm(darkness))) #, label='This is the total vertical, looking straight up')
+        #circle2a = sCircle((0, 0),pi, color=cmap(darkness)) #, label='This is the total vertical, looking straight up')
         circle3 = rCircle((0, 0),pi, edgecolor='r') #, label='This is the total vertical, looking straight up')
 
-                
-        plt.imshow(im.T, cmap=cmap, extent=xr+yr, vmin=0, vmax=1)
         ax.add_patch(circle2a)
         ax.add_patch(circle0)
         ax.add_patch(circle1)
         ax.add_patch(circle2)
         ax.add_patch(circle3)
 
+        # set celestial objects
         from matplotlib.offsetbox import OffsetImage, AnnotationBbox
         LOC.date=ephem.Date(datetime.utcnow())
+        cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.10}
         for cob in CelObjs:
             # curren positions
             cob.compute(LOC)
             xy=getXY(cob.az, cob.alt)
-            #ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r', label=cob.name))
-            # arrowprops=None, 
-            #ax.annotate(cob.name, xy=(xy[0], xy[1]), xytext=((xy[0]-0.3, xy[1]-0.1)), color='g') 
-            #if cob.name not in ['Sun', 'Moon', 'Mercury','Venus','Jupiter', 'Saturn', 'Mars', 'Uranus']:
-            #    ax.add_patch(sCircle((xy[0], xy[1]), 0.05*pi, color='r')) #, label=cob.name))
-            if 1==1:
-                if cob.name=='Sun':
-                    imtest = plt.imread('sun1.png')
-                    soi = OffsetImage(imtest, zoom = .15)
-                    sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(sbox)
-                if cob.name=='Uranus':
-                    imtest = plt.imread('Uranus.png')
-                    roi = OffsetImage(imtest, zoom = .08)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                if cob.name=='Moon':
-                    imtest = plt.imread('Moon-FQ.png')
-                    moi = OffsetImage(imtest, zoom = .10)
-                    mbox = AnnotationBbox(moi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(mbox)
-                if cob.name=='Jupiter':
-                    imtest = plt.imread('Jupiter.png')
-                    joi = OffsetImage(imtest, zoom = .15)
-                    jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(jbox)
-                if cob.name=='Neptune':
-                    imtest = plt.imread('Neptune.png')
-                    roi = OffsetImage(imtest, zoom = .08)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                if cob.name=='Saturn':
-                    imtest = plt.imread('Saturn.png')
-                    joi = OffsetImage(imtest, zoom = .10)
-                    jbox = AnnotationBbox(joi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(jbox)
-                if cob.name=='Mars':
-                    imtest = plt.imread('Mars.png')
-                    roi = OffsetImage(imtest, zoom = .03)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                if cob.name=='Mercury':
-                    imtest = plt.imread('Mercury.png')
-                    roi = OffsetImage(imtest, zoom = .1)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                if cob.name=='Venus':
-                    imtest = plt.imread('Venus.png')
-                    roi = OffsetImage(imtest, zoom = .1)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                if cob.name=='Pluto':
-                    imtest = plt.imread('Pluto.png')
-                    roi = OffsetImage(imtest, zoom = .1)
-                    rbox = AnnotationBbox(roi, (xy[0], xy[1]), frameon=False) #, label=cob.name)        
-                    ax.add_artist(rbox)
-                        
+            if cob.name!='Moon':
+                fName=cob.name
+            else:
+                fName='Moon-'+'FQ'
+            imtest = plt.imread(fName+'.png')
+            soi = OffsetImage(imtest, zoom = cobZoom[cob.name])
+            # set celestial object on chart 
+            sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)   
+            ax.add_artist(sbox)
+            # set legend
+            soi = OffsetImage(imtest, zoom = 0.4*cobZoom[cob.name])
+            sbox = AnnotationBbox(soi, legendLocs[cob.name], frameon=False)   
+            ax.add_artist(sbox)
+            ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-2.5)), textcoords='offset points', color='black', fontsize=6)
+            #ax.annotate(cob.name, legendLocs[cob.name], legendLocs[cob.name], xycoords='data', color='black')
+      
         #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
@@ -349,6 +321,7 @@ def CelestialPicture():
         return(fig)
         #plt.show()
 
+        
 #@st.cache_data
 def getImage(zurl, fType):
     from PIL import Image
