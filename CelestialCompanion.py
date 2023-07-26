@@ -148,8 +148,8 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     d=dtdt.now()
     nextFullDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextFullMoon.datetime().strftime('%B')} {nextFullMoon.datetime().day}")
     nextNewDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextNewMoon.datetime().strftime('%B')} {nextNewMoon.datetime().day}")
-    ax.text(65, -33, nextNewDate)
-    ax.text(-160, -33, nextFullDate)
+    ax.text(65, -33, nextNewDate, fontsize=8)
+    ax.text(-160, -33, nextFullDate, fontsize=8)
     ax.plot(sin(phase)*x, cos(phase)*x, ls='solid', linewidth=7, color='orange', alpha=1)
     plt.axis('off')
     return(fig)    
@@ -234,29 +234,13 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     settingAlt=sun.alt
     #print(sun.az, sun.alt)
             
-    # relative brighness
-    relRise=abs(((ephem.Date(datetime.utcnow())-rTime))/(sTime-rTime)-0.5)
-    if  relRise < 0.3/2:
-        darkness=0.0
-    elif relRise < 0.4/2:
-        darkness=0.15
-    elif relRise < 0.6/2:
-        darkness=0.3
-    elif relRise < 0.7/2:
-        darkness=0.4
-    elif relRise < 0.8/2:
-        darkness=0.5
-    elif relRise < 0.9/2:
-        darkness=0.7
-    elif relRise < 1.0/2:
-        darkness=0.8
-    elif relRise < 1.1/2:
-        darkness=0.9
-    else:
-        darkness=1.0
-    
-    print(relRise,darkness)
-    
+    # relative darkness
+    riseFrac=(ephem.Date(datetime.utcnow())-rTime)/(sTime-rTime)
+    relRise0=abs(riseFrac)-0.5
+    relRise=min(1.1, 2*relRise0)/1.1
+    darkness=relRise**2
+    ##print(riseFrac,relRise,darkness)
+        
     xfac=1.01
     xr=[-xfac*pi,xfac*pi]
     yr=[-xfac*pi,xfac*pi]
