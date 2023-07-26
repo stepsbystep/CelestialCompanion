@@ -127,8 +127,11 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     
     if lat != 0:
         LOC = ephem.Observer()
-        LOC.lon = to_string(long)
-        LOC.lat = to_string(lat)
+        try:
+            LOC.lon = to_string(long)
+            LOC.lat = to_string(lat)
+        except:
+            LOC = ephem.city("Chicago")
     else:
         LOC = ephem.city("Chicago")
     
@@ -193,8 +196,11 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
 
     if lat != 0:
         LOC = ephem.Observer()
-        LOC.lon = to_string(long)
-        LOC.lat = to_string(lat)
+        try:
+            LOC.lon = to_string(long)
+            LOC.lat = to_string(lat)
+        except:
+            LOC = ephem.city("Chicago")
     else:
         LOC = ephem.city("Chicago")
 
