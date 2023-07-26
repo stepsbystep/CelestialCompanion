@@ -112,18 +112,27 @@ def Celestial(lTimeZone, lat=0, long=0):
                                      } )
     return(Celestial)
 
+
+    
+
 ## to display in streamlit: https://docs.streamlit.io/library/api-reference/charts/st.pyplot
-def plotMoonPhase(lTimeZone):
+def plotMoonPhase(lTimeZone, lat=0, long=0):
     import numpy as np
     from matplotlib import pyplot as plt
     from math import sin, cos, pi
-    from datetime import datetime
+    from datetime import datetime, timedelta, timezone
     
-    Chicago = ephem.city("Chicago")
-    lastNewMoon=ephem.previous_new_moon(Chicago.date)
-    nextNewMoon=ephem.next_new_moon(Chicago.date)
-    nextFullMoon=ephem.next_full_moon(Chicago.date)
-    decPhase=(Chicago.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
+    if lat != 0:
+        LOC = ephem.Observer()
+        LOC.lon = to_string(long)
+        LOC.lat = to_string(lat)
+    else:
+        LOC = ephem.city("Chicago")
+    
+    lastNewMoon=ephem.previous_new_moon(LOC.date)
+    nextNewMoon=ephem.next_new_moon(LOC.date)
+    nextFullMoon=ephem.next_full_moon(LOC.date)
+    decPhase=(LOC.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
     phase=(-decPhase+.25)*2*pi
     plt.rcParams["figure.figsize"] = [7.00, 3.50]
     plt.rcParams["figure.autolayout"] = True
@@ -171,7 +180,7 @@ def rCircle( xyLoc, radius, edgecolor, label=""):
                    edgecolor=edgecolor, fill=False, label=label)
         return(pC)
 
-def CelestialPicture():
+def CelestialPicture(lTimeZone, lat=0, long=0):
     import matplotlib.pyplot as plt,numpy as np
     from math import pi, tan
     import ephem
@@ -179,7 +188,14 @@ def CelestialPicture():
     #%matplotlib inline
     #%matplotlib widget
 
-    LOC = ephem.city("Chicago")
+    if lat != 0:
+        LOC = ephem.Observer()
+        LOC.lon = to_string(long)
+        LOC.lat = to_string(lat)
+    else:
+        LOC = ephem.city("Chicago")
+
+    # LOC must be set with lat and long!
     LTN=dtdt.now()  #LocalTimeNow(lTimeZone)
     localMorning=datetime(LTN.year,LTN.month,LTN.day,5)
     
@@ -298,11 +314,10 @@ def CelestialPicture():
             if cob.name!='Moon':
                 fName=cob.name
             else:
-                Chicago = ephem.city("Chicago")
-                lastNewMoon=ephem.previous_new_moon(Chicago.date)
-                nextNewMoon=ephem.next_new_moon(Chicago.date)
-                nextFullMoon=ephem.next_full_moon(Chicago.date)
-                decPhase=(Chicago.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
+                lastNewMoon=ephem.previous_new_moon(LOC.date)
+                nextNewMoon=ephem.next_new_moon(LOC.date)
+                nextFullMoon=ephem.next_full_moon(LOC.date)
+                decPhase=(LOC.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
                 numPhase=int(decPhase*7.999)
                 fName='Moon-'+moonPhasesSuf[numPhase]
             imtest = plt.imread(fName+'.png')
@@ -326,9 +341,9 @@ def CelestialPicture():
         cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         if darkness < .75:
-            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black') 
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black', weight='bold') 
         else: 
-            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='red') 
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='red', weight='bold') 
         #ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
         plt.axis('off')
         return(fig)
@@ -404,17 +419,17 @@ def main():
 
 
     st.title("Celestial Daily Companion")
-    TAB1, TAB2, TAB3, TAB4, TAB5 = st.tabs(["Main", "Phases of the Moon", "Celestial Globe", "Why", "About"])
+    TAB1, TAB2, TAB3, TAB4, TAB5 = st.tabs(["Celestial Globe", "Phases of the Moon", "Astronomical Table", "Why", "About"])
     
     with TAB1:
         placeholder1=st.empty()
-        placeholder1b=st.empty()
         
     with TAB2:
         placeholder2=st.empty()
     
     with TAB3:
         placeholder3=st.empty()
+        placeholder3b=st.empty()
         
     with TAB4:
         placeholder4=st.empty()
@@ -428,13 +443,13 @@ def main():
     firstIt=True
     lastMinute=-99
     while True==True:
-        with TAB1:
+        with TAB3:
             #st.markdown(localTimeZone)
             #st.markdown(f"Latitude: {localLat}, Longitude: {localLong}")
             while False==False:
                 
-                placeholder1.empty()
-                with placeholder1.container():
+                placeholder3.empty()
+                with placeholder3.container():
                     d=LocalTimeNow(localTimeZone)
                     if localCity!=None:
                         st.header(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
@@ -453,8 +468,8 @@ def main():
             # check city in case app is travelling
             localCity=getCity(localLat,localLong)
 
-            placeholder1b.empty()
-            with placeholder1b.container():
+            placeholder3b.empty()
+            with placeholder3b.container():
                 d2=LocalTimeNow(localTimeZone)
                 COLZ=[.20,.15,.20,.15,.15,.15]
                 COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
@@ -499,13 +514,13 @@ def main():
             placeholder2.empty()
             with placeholder2.container():
                 st.header("Phases of the Moon and the Current Phase")
-                st.pyplot(plotMoonPhase(localTimeZone))
+                st.pyplot(plotMoonPhase(localTimeZone, localLat, localLong))
                 st.markdown("Dates are for the next new and full moons. The orange line and circle indicate the current moon phase. Illustration credit Wikipedia: Andonee - Own work [CC BY-SA 4.0](htps://commons.wikimedia.org/w/index.php?curid=38635547)")
-        with TAB3:
-            placeholder3.empty()
-            with placeholder3.container():
+        with TAB1:
+            placeholder1.empty()
+            with placeholder1.container():
                 matplotlib.pyplot.close(999)
-                CP=CelestialPicture()
+                CP=CelestialPicture(localTimeZone, localLat, localLong)
                 st.pyplot(CP)
                 with st.expander("For more information this chart of celestial objects click here ..."):
                     st.markdown(f"This chart shows the celestial objects oriented as an observer facing South would see them. Objects rise to East, which is on the left side of the chart, and set in the West, which is the right side of the chart. The South is at the top of the chart and North is at the bottom.")
