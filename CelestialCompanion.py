@@ -2,13 +2,11 @@ import pandas as pd
 import io
 import pytz
 import matplotlib
-from streamlit_javascript import st_javascript
 from backports.zoneinfo import ZoneInfo
 from datetime import datetime, timedelta
 import ephem
 import datetime as dt
 from datetime import datetime as dtdt
-from streamlit_js_eval import streamlit_js_eval, get_geolocation
 import re
 from geopy.geocoders import Nominatim
 import warnings
@@ -114,8 +112,6 @@ def Celestial(lTimeZone, lat=0, long=0):
                                   , 'Altitude' : altitude
                                      } )
     return(Celestial)
-
-
     
 
 ## to display in streamlit: https://docs.streamlit.io/library/api-reference/charts/st.pyplot
@@ -143,7 +139,7 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     plt.rcParams["figure.figsize"] = [7.00, 3.50]
     plt.rcParams["figure.autolayout"] = True
     
-    im = plt.imread("Moon_Phase_Diagram.gif")
+    im = plt.imread('images/'+"Moon_Phase_Diagram.gif")
     fig, ax = plt.subplots()
     im = ax.imshow(im, extent=[-150, 230,-150, 150])
     x = np.array(range(38, 50))
@@ -160,7 +156,6 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     plt.axis('off')
     return(fig)    
 
-
 # hovertext
 # https://mplcursors.readthedocs.io/en/stable/
 # https://github.com/anntzer/mplcursors/issues/23
@@ -168,7 +163,6 @@ from math import pi, sin, cos
 def getXY(az, alt):
     R=0.5*pi+alt
     return((sin(pi+az)*R, cos(pi+az)*R))
-
 
 def sCircle( xyLoc, radius, color, label=""):
         from matplotlib.patches import Polygon        
@@ -313,7 +307,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
                 decPhase=(LOC.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
                 numPhase=int(decPhase*7.999)
                 fName='Moon-'+moonPhasesSuf[numPhase]
-            imtest = plt.imread(fName+'.png')
+            imtest = plt.imread('images/'+fName+'.png')
             soi = OffsetImage(imtest, zoom = cobZoom[cob.name])
             # set celestial object on chart 
             sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)   
@@ -341,26 +335,14 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         plt.axis('off')
         return(fig)
         #plt.show()
-
         
-#@st.cache_data
-def getImage(zurl, fType):
-    from PIL import Image
-    import urllib.request  
-    urllib.request.urlretrieve(zurl, "zimage."+fType)
-    zimage = Image.open("zimage."+fType)
-    return(zimage)
-
-
-    # to get city if coords are available
-    #@st.cache_resource
-    def geoloc():
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            geolocator = Nominatim(user_agent="celestialgoingson")
-        return(geolocator)
-    geolocator=geoloc()
-
+# to get city if coords are available
+#@st.cache_resource
+def geoloc():
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        geolocator = Nominatim(user_agent="celestialgoingson")
+    return(geolocator)
     
     #st.set_page_config(layout="centered")
     #localScreenWidth=streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
@@ -373,12 +355,16 @@ def getImage(zurl, fType):
 def main():    
     import streamlit as st
     import time
+    from streamlit_javascript import st_javascript
+    from streamlit_js_eval import streamlit_js_eval, get_geolocation
     
     localTimeZone = st_javascript("""await (async () => {
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             console.log(userTimezone)
             return userTimezone
             })().then(returnValue => returnValue)""")
+
+    geolocator=geoloc()
 
     @st.cache_resource
     def getCity(lat,long):
@@ -539,8 +525,9 @@ def main():
             with placeholder5.container():
                 st.write("This app was developed to promote celestial awareness, and most particularly, of the rising and setting times of the Sun and the Moon and the phases of the Moon.")
                 st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial positions are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
-     
-                zimage=getImage("https://upload.wikimedia.org/wikipedia/commons/1/19/Solar_System_true_color.jpg","jpg")
+                
+                from PIL import Image
+                zimage = Image.open('images/'+"zimage.jpg")
                 st.image(zimage,caption="Source: Wikipedia")
 
     
