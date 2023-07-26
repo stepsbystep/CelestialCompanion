@@ -38,7 +38,11 @@ def convertLocalTime(d,lTimeZone):
     return(d.astimezone(tz_local))   
 
 def LocalTimeNow(lTimeZone):
-    return(convertLocalTime(dtdt.now(pytz.timezone('UTC')), lTimeZone))
+    try:
+        cDateTime=convertLocalTime(dtdt.now(pytz.timezone('UTC')), lTimeZone)
+    except:
+        cDateTime=dtdt.now()
+    return(cDateTime)
     
 def Celestial(lTimeZone, lat=0, long=0):
 
