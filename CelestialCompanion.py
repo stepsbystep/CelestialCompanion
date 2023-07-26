@@ -190,7 +190,7 @@ def CelestialPicture():
     rTime=LOC.next_rising(sun)
     sTime=LOC.next_setting(sun)
     if rTime> sTime:
-        rTime=LOC.previous_rising(cob)
+        rTime=LOC.previous_rising(sun)
     
     sun = ephem.Sun()
     moon = ephem.Moon()
