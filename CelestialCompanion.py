@@ -51,7 +51,7 @@ def Celestial(lTimeZone, lat=0, long=0):
         try:
             LOC.lon = to_string(long)
             LOC.lat = to_string(lat)
-        exception:
+        except:
             LOC = ephem.city("Chicago")
     else:
         LOC = ephem.city("Chicago")
