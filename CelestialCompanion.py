@@ -243,10 +243,10 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
             
     # relative darkness
     riseFrac=(ephem.Date(datetime.utcnow())-rTime)/(sTime-rTime)
-    relRise0=abs(riseFrac)-0.5
+    relRise0=abs(riseFrac-0.5)
     relRise=min(1.1, 2*relRise0)/1.1
     darkness=relRise**2
-    ##print(riseFrac,relRise,darkness)
+    print(riseFrac,relRise,darkness)
         
     xfac=1.01
     xr=[-xfac*pi,xfac*pi]
