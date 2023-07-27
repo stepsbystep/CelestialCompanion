@@ -246,7 +246,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     relRise0=abs(riseFrac-0.5)
     relRise=min(1.1, 2*relRise0)/1.1
     darkness=relRise**2
-    print(riseFrac,relRise,darkness)
+    #print(riseFrac,relRise,darkness)
         
     xfac=1.01
     xr=[-xfac*pi,xfac*pi]
@@ -279,12 +279,15 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         
         from matplotlib.colors import Normalize
         norm = Normalize(0, 1)
-        circle0 = sCircle((0, 0), .49*pi, color='black') #, label='Not visible in daytime because below the horizon')
-        circle1 = sCircle((0, 0), 0.025*pi, color='r') #, label='origin')
+        circle0 = sCircle((0, 0), .49*pi, color='black', label='Not visible in daytime because below the horizon')
+        circle1 = sCircle((0, 0), 0.025*pi, color='r', label='origin')
         circle2 = rCircle((0, 0),.5*pi, edgecolor='r', label='This is the horizon')
         # https://stackoverflow.com/questions/51020192/circle-plot-with-color-bar
-        circle2a = sCircle((0, 0),pi, color=cmap(norm(darkness))) #, label='This is the total vertical, looking straight up')
-        circle3 = rCircle((0, 0),pi, edgecolor='r') #, label='This is the total vertical, looking straight up')
+        circle2a = sCircle((0, 0), pi, color=cmap(norm(darkness)), label='This is the total vertical, looking straight up')
+        if darkness < .75:
+            circle3 = rCircle((0, 0),pi, edgecolor='r', label='This is the total vertical, looking straight up')
+        else:
+            circle3 = rCircle((0, 0),pi, edgecolor='black', label='This is the total vertical, looking straight up')
 
         ax.add_patch(circle2a)
         ax.add_patch(circle0)
@@ -400,6 +403,20 @@ def main():
             localLat=to_string(location['coords']['latitude'])
             localLong=to_string(location['coords']['longitude'])
     
+    st.markdown(
+        """
+            <style>
+                .appview-container .main .block-container {{
+                    padding-top: {padding_top}rem;
+                    }}
+            </style>""".format(
+            padding_top=0
+            ),
+        unsafe_allow_html=True,
+        )
+    #                padding-bottom: {padding_bottom}rem;
+    #                , padding_bottom=20
+
     # check city
     localCity=getCity(localLat,localLong)
 
