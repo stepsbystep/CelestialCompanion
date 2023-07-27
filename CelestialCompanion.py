@@ -358,6 +358,24 @@ def geoloc():
     # https://github.com/aghasemi/streamlit_js_eval/tree/master
     # aghasemi Alireza Ghasemi
 
+'''    
+    st.markdown(
+        """
+            <style>
+                .appview-container .main .block-container {{
+                    padding-top: {padding_top}rem;
+                    }}
+            </style>""".format(
+            padding_top=0
+            ),
+        unsafe_allow_html=True,
+        )
+    #                padding-bottom: {padding_bottom}rem;
+    #                , padding_bottom=20
+
+    # check city
+    localCity=getCity(localLat,localLong)
+''' 
 
 def main():    
     import streamlit as st
@@ -403,23 +421,6 @@ def main():
             localLat=to_string(location['coords']['latitude'])
             localLong=to_string(location['coords']['longitude'])
     
-    st.markdown(
-        """
-            <style>
-                .appview-container .main .block-container {{
-                    padding-top: {padding_top}rem;
-                    }}
-            </style>""".format(
-            padding_top=0
-            ),
-        unsafe_allow_html=True,
-        )
-    #                padding-bottom: {padding_bottom}rem;
-    #                , padding_bottom=20
-
-    # check city
-    localCity=getCity(localLat,localLong)
-
     st.title("Celestial Daily Companion")
     placeholderTime=st.empty()
     with placeholderTime.container():
