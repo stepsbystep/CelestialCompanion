@@ -392,6 +392,20 @@ def main():
         except KeyError:
             return(location.raw['address']['town'])
 
+    st.markdown(
+        """
+            <style>
+                .appview-container .main .block-container {{
+                    padding-top: {padding_top}rem;
+                    padding-bottom: {padding_bottom}rem;
+                    }}
+
+            </style>""".format(
+            padding_top=0, padding_bottom=20
+            ),
+        unsafe_allow_html=True,
+        )
+    
     import contextlib
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
