@@ -34,8 +34,12 @@ def dayOfTheWeek():
     return DaysOfTheWeek[dayOfTheWeekNum()]
 
 def convertLocalTime(d,lTimeZone):
-    tz_local = pytz.timezone(lTimeZone)
-    return(d.astimezone(tz_local))   
+    try:
+        tz_local = pytz.timezone(lTimeZone)
+        lt=d.astimezone(tz_local)
+    except:
+        lt=d
+    return(lt)   
 
 def LocalTimeNow(lTimeZone):
     try:
@@ -152,8 +156,8 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     moonPos = plt.Circle((sin(phase)*rad, cos(phase)*rad), siz, edgecolor="orange", linewidth=3, alpha=.5, fill=False, clip_on=False)
     ax.add_patch(moonPos)
     d=dtdt.now()
-    nextFullDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextFullMoon.datetime().strftime('%B')} {nextFullMoon.datetime().day}")
-    nextNewDate=to_string(f"{DaysOfTheWeek[dayOfTheWeekNum(lTimeZone)]}, {nextNewMoon.datetime().strftime('%B')} {nextNewMoon.datetime().day}")
+    nextFullDate=to_string(f"{DaysOfTheWeek[nextFullMoon.datetime().isoweekday()]}, {nextFullMoon.datetime().strftime('%B')} {nextFullMoon.datetime().day}")
+    nextNewDate=to_string(f"{DaysOfTheWeek[nextNewMoon.datetime().isoweekday()]}, {nextNewMoon.datetime().strftime('%B')} {nextNewMoon.datetime().day}")
     ax.text(65, -33, nextNewDate, fontsize=8)
     ax.text(-160, -33, nextFullDate, fontsize=8)
     ax.plot(sin(phase)*x, cos(phase)*x, ls='solid', linewidth=7, color='orange', alpha=1)
@@ -264,8 +268,14 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     legendColorsNight={'Sun': 'black','Moon': 'black','Mercury': 'red','Venus': 'black','Mars': 'red','Jupiter': 'red','Saturn': 'red', 'Uranus': 'black', 'Neptune': 'black','Pluto': 'black'}
     
     # memory issues: https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
-    plt.close(999)
-    fig, ax = plt.subplots(num=999,clear=True)
+    from matplotlib.figure import Figure
+    fig = Figure()
+    ax = fig.subplots()   
+    ax.set_xlim(xr)
+    ax.set_ylim(yr)
+
+    #plt.close(999)
+    #fig, ax = plt.subplots(num=999,clear=True)
         
     if 1==1:
         nx, ny = 50.,50.
@@ -299,7 +309,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         doLegend=True
         from matplotlib.offsetbox import OffsetImage, AnnotationBbox
         LOC.date=ephem.Date(datetime.utcnow())
-        cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.10}
+        cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.075}
         moonPhasesSuf=['new','WC','FQ','WG','full','XG','3Q','XC']
         for cob in CelObjs:
             # curren positions
@@ -339,7 +349,9 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         else: 
             ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='red', weight='bold') 
         #ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
-        plt.axis('off')
+        #plt.axis('off')
+        import numpy as np
+        np.vectorize(lambda ax:ax.axis('off'))(ax)
         return(fig)
         #plt.show()
         
@@ -419,7 +431,7 @@ def main():
     # check city
     localCity=getCity(localLat,localLong)
     
-    st.title("Celestial Daily Companion")
+    st.title("Celestial Companion")
     placeholderTime=st.empty()
     with placeholderTime.container():
         d=LocalTimeNow(localTimeZone)
@@ -466,7 +478,10 @@ def main():
                     if firstIt==True:
                         firstIt=False
                         break
-                    if LocalTimeNow(localTimeZone).minute in [0, 15, 30, 45] and LocalTimeNow(localTimeZone).minute != lastMinute:
+                    # update charts every five minutes
+                    period=5
+                    dtMinute=LocalTimeNow(localTimeZone).minute
+                    if dtMinute/period == int(dtMinute/period) and dtMinute != lastMinute:
                         lastMinute=LocalTimeNow(localTimeZone).minute
                         break
                         
@@ -489,10 +504,10 @@ def main():
                         st.markdown("**Setting Time**")
                     with COL5:
                         deg=u"\u00b0"
-                        helpText="Azimuth is the clockwise position in degress from North. Azimuth is updated every 15 minutes. Directions correspond to azimuth as follows: East=90"+deg+", South=180"+deg+", West=270"+deg+", and North=360"+deg+" and 0"+deg+". A celestial body has azmith while risen and after setting."
+                        helpText="Azimuth is the clockwise position in degress from North. Azimuth is updated every 5 minutes. Directions correspond to azimuth as follows: East=90"+deg+", South=180"+deg+", West=270"+deg+", and North=360"+deg+" and 0"+deg+". A celestial body has azmith while risen and after setting."
                         st.markdown("**Azimuth**", help=helpText)              
                     with COL6:
-                        helpTextAlt="Altitude is the elevation in degress relative to the horizon. Negative altitude indicates objects that have set. Altitude is updated every 15 minutes."
+                        helpTextAlt="Altitude is the elevation in degress relative to the horizon. Negative altitude indicates objects that have set. Altitude is updated every 5 minutes."
                         st.markdown("**Altitude**",help=helpTextAlt)
        
                 for cob in Celestial(localTimeZone, localLat, localLong).iterrows():
