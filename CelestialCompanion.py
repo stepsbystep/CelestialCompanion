@@ -345,9 +345,9 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
         cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         if darkness < .75:
-            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='black', weight='bold') 
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.375,xfac*pi-0.2)), color='black', weight='bold') 
         else: 
-            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.5,xfac*pi-0.2)), color='red', weight='bold') 
+            ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.375,xfac*pi-0.2)), color='red', weight='bold') 
         #ax.annotate(f"rel: {relRise}, d: {darkness}", xy=(-pi, xfac*pi-0.2), xytext=((-pi+0.5,xfac*pi-0.2)), color='black') 
         #plt.axis('off')
         import numpy as np
