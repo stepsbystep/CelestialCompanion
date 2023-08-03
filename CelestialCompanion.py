@@ -269,7 +269,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     
     # memory issues: https://stackoverflow.com/questions/28757348/how-to-clear-memory-completely-of-all-matplotlib-plots
     from matplotlib.figure import Figure
-    fig = Figure()
+    fig = Figure(figsize=(5.0,5.0))
     ax = fig.subplots()   
     ax.set_xlim(xr)
     ax.set_ylim(yr)
