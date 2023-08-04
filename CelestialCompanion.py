@@ -309,6 +309,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         doLegend=True
         from matplotlib.offsetbox import OffsetImage, AnnotationBbox
         LOC.date=ephem.Date(datetime.utcnow())
+        zoomMag=1.5
         cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.075}
         moonPhasesSuf=['new','WC','FQ','WG','full','XG','3Q','XC']
         for cob in CelObjs:
@@ -324,21 +325,22 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
                 decPhase=(LOC.date-lastNewMoon)/(nextNewMoon-lastNewMoon)
                 numPhase=int(decPhase*7.999)
                 fName='Moon-'+moonPhasesSuf[numPhase]
-            imtest = plt.imread('images/'+fName+'.png')
-            soi = OffsetImage(imtest, zoom = cobZoom[cob.name])
+            #imtest = plt.imread('images/'+fName+'.png')
+            imtest = streamReadIm('images/'+fName+'.png')
+            soi = OffsetImage(imtest, zoom = zoomMag*cobZoom[cob.name])
             # set celestial object on chart 
             sbox = AnnotationBbox(soi, (xy[0], xy[1]), frameon=False, label=cob.name)   
             ax.add_artist(sbox)
             # set legend
             if doLegend==True:
-                soi = OffsetImage(imtest, zoom = 0.4*cobZoom[cob.name])
+                soi = OffsetImage(imtest, zoom = zoomMag*0.4*cobZoom[cob.name])
                 sbox = AnnotationBbox(soi, legendLocs[cob.name], frameon=False, label=cob.name)   
                 ax.add_artist(sbox)
                 if darkness < .75:
                     tColor=legendColorsDay[cob.name]
-                else:
+                else: 
                     tColor=legendColorsNight[cob.name]
-                ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-1)), textcoords='offset points', color=tColor, fontsize=6)
+                ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-4)), textcoords='offset points', color=tColor, fontsize=10)
       
         cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
         cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
@@ -369,6 +371,12 @@ def geoloc():
     # https://discuss.streamlit.io/t/streamlit-geolocation/30796
     # https://github.com/aghasemi/streamlit_js_eval/tree/master
     # aghasemi Alireza Ghasemi
+
+import streamlit as st
+@st.cache_resource
+def streamReadIm(fileLoc):
+    import matplotlib.pyplot as plt
+    return plt.imread(fileLoc)
 
 def main():    
     import streamlit as st
