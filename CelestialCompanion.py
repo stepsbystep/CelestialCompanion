@@ -13,7 +13,7 @@ import warnings
 
 DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
-
+x
 def to_string(*args, **kwargs):
     output = io.StringIO()
     print(*args, file=output,end="", **kwargs)
@@ -147,7 +147,7 @@ def plotMoonPhase(lTimeZone, lat=0, long=0):
     plt.rcParams["figure.figsize"] = [7.00, 3.50]
     plt.rcParams["figure.autolayout"] = True
     
-    im = plt.imread('images/'+"Moon_Phase_Diagram.gif")
+    im = streamReadIm('images/'+"Moon_Phase_Diagram.gif")
     fig, ax = plt.subplots()
     im = ax.imshow(im, extent=[-150, 230,-150, 150])
     x = np.array(range(38, 50))
@@ -568,11 +568,8 @@ def main():
             with placeholder5.container():
                 st.write("This app was developed to promote celestial awareness, and most particularly, of the rising and setting times of the Sun and the Moon and the phases of the Moon.")
                 st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial positions are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
-                
-                from PIL import Image
-                zimage = Image.open('images/'+"zimage.jpg")
-                st.image(zimage,caption="Source: Wikipedia")
-
+                zImage = streamReadIm('images/'+"zimage.jpg")
+                st.image(zImage,caption="Source: Wikipedia")
     
 if __name__ == '__main__':
     main()        
