@@ -231,7 +231,6 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     pluto=ephem.Pluto()
     CelObjs=[sun,moon,mercury,venus,mars,jupiter,saturn, uranus, neptune,pluto]
     CelNames=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn', 'Uranus', 'Neptune','Pluto']
-
     
     # sun rising and setting
     LOC.date=rTime
@@ -311,7 +310,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
         LOC.date=ephem.Date(datetime.utcnow())
         zoomMag=1.5
         cobZoom={'Sun': 0.15,'Moon': 0.10,'Mercury': 0.10,'Venus': 0.10,'Mars': 0.03,'Jupiter': 0.15,'Saturn': 0.10, 'Uranus': 0.08, 'Neptune': 0.08,'Pluto': 0.075}
-        moonPhasesSuf=['new','WC','FQ','WG','full','XG','3Q','XC']
+        moonPhasesSuf=['new','XC','FQ','XG','full','WG','3Q','WC']
         for cob in CelObjs:
             # curren positions
             cob.compute(LOC)
@@ -438,10 +437,32 @@ def main():
 
     # check city
     localCity=getCity(localLat,localLong)
-    
+ 
+    # Location Updating
+    def Location_Update():
+        with st.form("location_update"):
+           st.write("Inside the form")
+           slider_val = st.slider("Form slider")
+           checkbox_val = st.checkbox("Form checkbox")
+           # Every form must have a submit button.
+           submitted = st.form_submit_button("Submit")
+           if submitted:
+               st.write("slider", slider_val, "checkbox", checkbox_val)
+
+    def DT_Update():
+        with st.form("location_update"):
+           st.write("Inside the form")
+           slider_val = st.slider("Form slider")
+           checkbox_val = st.checkbox("Form checkbox")
+           # Every form must have a submit button.
+           submitted = st.form_submit_button("Submit")
+           if submitted:
+               st.write("slider", slider_val, "checkbox", checkbox_val)
+
     st.title("Celestial Companion")
     placeholderTime=st.empty()
     with placeholderTime.container():
+        #with COLB1:
         d=LocalTimeNow(localTimeZone)
         if localCity!=None:
             st.subheader(f"{localCity}, {DaysOfTheWeek[dayOfTheWeekNum(localTimeZone)]}, {d.strftime('%B')} {d.day}, {d.strftime('%H:%M:%S')}")
@@ -498,6 +519,15 @@ def main():
 
             placeholder3.empty()
             with placeholder3.container():
+                st.write('''<style>
+
+                [data-testid="column"] {
+                    width: calc(33.3333% - 1rem) !important;
+                    flex: 1 1 calc(33.3333% - 1rem) !important;
+                    min-width: calc(33% - 1rem) !important;
+                }
+                </style>''', unsafe_allow_html=True)
+
                 d2=LocalTimeNow(localTimeZone)
                 COLZ=[.20,.15,.20,.15,.15,.15]
                 COL1, COL2, COL3, COL4, COL5, COL6 = st.columns(COLZ)
@@ -557,6 +587,30 @@ def main():
                     st.markdown(f"An object's elevation is represented relative to the horizon, which is represented as the red ring surrounding the black central area of the chart. Objects above the horizon are shown in the region between the horizon ring and the outer red ring representing 90"+deg+" elevation. Objects that are below the horizon and cannot be seen are in the black area. Ninty degrees negative elevation is the dead center of the chart, in red.")
                     st.markdown(f"The region between the two red rings corresponds to the visible sky. This region is shown in light blue during the day and dark blue at night. Around sunrise and sunset intermediate colors are shown.")
 
+                with st.expander("To update location ..."):
+                    #blRez=st.button("Update location", disabled=False, key=11, type="primary", on_click=Location_Update) 
+                    #btRez=st.button("Update date and or time", disabled=False, key=22, type="primary", on_click=DT_Update) 
+                    #if blRez:
+                    #    viz="visible"
+                    #else:
+                    #    viz="collapsed"
+                    st.text_input("Enter new location for Celestical Companion.", label_visibility="visible")
+                with st.expander("To update date or time ..."):
+                    #btRez=st.button("Update Date or Time", disabled=False, key=222, type="primary", on_click=DT_Update) 
+                    #btRez=st.button("Update date and or time", disabled=False, key=22, type="primary", on_click=DT_Update) 
+                    #if btRez:
+                    #    vizd="visible"
+                    #else:
+                    #    vizd="collapsed"
+                    colE1, colE2 = st.columns([.5,.5])
+                    with colE1:
+                        newDate=LocalTimeNow(localTimeZone)
+                        st.date_input("Enter new date", value=newDate, help=None, on_change=None, args=None, kwargs=None, format="YYYY/MM/DD", disabled=False, label_visibility="visible")
+                    with colE2:
+                        newTime=newDate
+                        st.time_input("Enter new time", value=newTime, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+                #####
+                    
         with TAB4:
             placeholder4.empty()
             with placeholder4.container():
@@ -570,6 +624,6 @@ def main():
                 st.write("Celestial Companion is distributed to the web using [Streamlit](https://streamlit.io), an open-source [Python](https://www.python.org/) package. Celestial positions are calcuated in Python with [PyEphem](https://rhodesmill.org/pyephem/index.html), another open-source Python pacakge. Rising and setting times are approximate, based on the latitude and longitude returned from the request to the user's browser or on PyEphem's Chicago coordinates.")
                 zImage = streamReadIm('images/'+"zimage.jpg")
                 st.image(zImage,caption="Source: Wikipedia")
-    
+
 if __name__ == '__main__':
     main()        
