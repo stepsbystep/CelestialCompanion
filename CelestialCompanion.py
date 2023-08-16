@@ -520,11 +520,10 @@ def main():
             placeholder3.empty()
             with placeholder3.container():
                 st.write('''<style>
-
                 [data-testid="column"] {
-                    width: calc(33.3333% - 1rem) !important;
-                    flex: 1 1 calc(33.3333% - 1rem) !important;
-                    min-width: calc(33% - 1rem) !important;
+                    width: calc(16.6666% - 1rem) !important;
+                    flex: 1 1 calc(16.6666% - 1rem) !important;
+                    min-width: calc(16.6666% - 1rem) !important;
                 }
                 </style>''', unsafe_allow_html=True)
 
@@ -587,28 +586,28 @@ def main():
                     st.markdown(f"An object's elevation is represented relative to the horizon, which is represented as the red ring surrounding the black central area of the chart. Objects above the horizon are shown in the region between the horizon ring and the outer red ring representing 90"+deg+" elevation. Objects that are below the horizon and cannot be seen are in the black area. Ninty degrees negative elevation is the dead center of the chart, in red.")
                     st.markdown(f"The region between the two red rings corresponds to the visible sky. This region is shown in light blue during the day and dark blue at night. Around sunrise and sunset intermediate colors are shown.")
 
-                with st.expander("To update location ..."):
+                #with st.expander("To update location ..."):
                     #blRez=st.button("Update location", disabled=False, key=11, type="primary", on_click=Location_Update) 
                     #btRez=st.button("Update date and or time", disabled=False, key=22, type="primary", on_click=DT_Update) 
                     #if blRez:
                     #    viz="visible"
                     #else:
                     #    viz="collapsed"
-                    st.text_input("Enter new location for Celestical Companion.", label_visibility="visible")
-                with st.expander("To update date or time ..."):
+                    #st.text_input("Enter new location for Celestical Companion.", label_visibility="visible")
+                #with st.expander("To update date or time ..."):
                     #btRez=st.button("Update Date or Time", disabled=False, key=222, type="primary", on_click=DT_Update) 
                     #btRez=st.button("Update date and or time", disabled=False, key=22, type="primary", on_click=DT_Update) 
                     #if btRez:
                     #    vizd="visible"
                     #else:
                     #    vizd="collapsed"
-                    colE1, colE2 = st.columns([.5,.5])
-                    with colE1:
-                        newDate=LocalTimeNow(localTimeZone)
-                        st.date_input("Enter new date", value=newDate, help=None, on_change=None, args=None, kwargs=None, format="YYYY/MM/DD", disabled=False, label_visibility="visible")
-                    with colE2:
-                        newTime=newDate
-                        st.time_input("Enter new time", value=newTime, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+                    #colE1, colE2 = st.columns([.5,.5])
+                    #with colE1:
+                    #    newDate=LocalTimeNow(localTimeZone)
+                    #    st.date_input("Enter new date", value=newDate, help=None, on_change=None, args=None, kwargs=None, format="YYYY/MM/DD", disabled=False, label_visibility="visible")
+                    #with colE2:
+                    #    newTime=newDate
+                    #    st.time_input("Enter new time", value=newTime, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
                 #####
                     
         with TAB4:
