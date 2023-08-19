@@ -11,7 +11,7 @@ import re
 from geopy.geocoders import Nominatim
 import warnings
 
-DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Fridayo','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
 def to_string(*args, **kwargs):
@@ -409,7 +409,8 @@ def main():
         try:
             return(location.raw['address']['city'])
         except KeyError:
-            return(location.raw['address']['town'])
+            #return(location.raw['address']['town'])
+            return('Not located')
 
     st.markdown(
         """
