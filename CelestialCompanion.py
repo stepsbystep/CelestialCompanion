@@ -409,8 +409,10 @@ def main():
         try:
             return(location.raw['address']['city'])
         except KeyError:
-            #return(location.raw['address']['town'])
-            return('Not located')
+            try:
+                return(location.raw['address']['town'])
+            except:
+                return('Not located')
 
     st.markdown(
         """
