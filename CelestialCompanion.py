@@ -391,21 +391,21 @@ def main():
 
     geolocator=geoloc()
 
-    @st.cache_resource
+    #@st.cache_resource
     def getCity(lat,long):
         if lat == 0 or long == 0:
             return(None)
         geostr=to_string(f"{lat}, {long}")
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            try:
-                location = geolocator.reverse(geostr)
-            except:
-                location=None
+        #with warnings.catch_warnings():
+        #    warnings.simplefilter("ignore")
         try:
-            x=location.raw['address']
+            location = geolocator.reverse(geostr)
         except:
             return(None)
+        #try:
+        #    x=location.raw['address']
+        #except:
+        #    return(None)
         try:
             return(location.raw['address']['city'])
         except KeyError:
@@ -428,15 +428,20 @@ def main():
         unsafe_allow_html=True,
         )
     
-    import contextlib
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        with contextlib.suppress(TypeError):
-            localLat=None
-            localLong=None
+    # get approximate location
+    #import contextlib
+    #with warnings.catch_warnings():
+    #    warnings.simplefilter("ignore")
+    #    with contextlib.suppress(TypeError):
+    if True:
+        try:
             location=get_geolocation()
             localLat=to_string(location['coords']['latitude'])
             localLong=to_string(location['coords']['longitude'])
+        except:
+            localLat=None
+            localLong=None
+
 
     # check city
     localCity=getCity(localLat,localLong)
