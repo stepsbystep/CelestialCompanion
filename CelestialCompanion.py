@@ -11,7 +11,7 @@ import re
 from geopy.geocoders import Nominatim
 import warnings
 
-DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Fridayo','Saturday']
+DaysOfTheWeek=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
 ShortDaysOfTheWeek=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
 
 def to_string(*args, **kwargs):
