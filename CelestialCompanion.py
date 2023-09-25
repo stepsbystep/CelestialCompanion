@@ -192,7 +192,7 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
     import matplotlib.pyplot as plt,numpy as np
     from math import pi, tan
     import ephem
-    import mplcursors
+    #import mplcursors
     #%matplotlib inline
     #%matplotlib widget
 
@@ -341,10 +341,10 @@ def CelestialPicture(lTimeZone, lat=0, long=0):
                     tColor=legendColorsNight[cob.name]
                 ax.annotate(cob.name, legendLocs[cob.name], xytext=((7,-4)), textcoords='offset points', color=tColor, fontsize=10)
       
-        cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
-        cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
-        cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
-        cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
+        #cursor = mplcursors.cursor(ax.patches, hover=2) #mplcursors.HoverMode.Transient)
+        #cursor.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
+        #cursor2 = mplcursors.cursor(ax.artists, hover=2) #mplcursors.HoverMode.Transient)
+        #`cursor2.connect('add', lambda sel: sel.annotation.set(text=sel.artist.get_label()))
         if darkness < .75:
             ax.annotate("South", xy=(0, xfac*pi-0.2), xytext=((0-0.375,xfac*pi-0.2)), color='black', weight='bold') 
         else: 
