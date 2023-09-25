@@ -6,4 +6,3 @@ streamlit-javascript
 streamlit_js_eval
 matplotlib
 geopy
-mplcursors
